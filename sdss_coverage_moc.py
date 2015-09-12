@@ -42,7 +42,7 @@ for cell in allcells:
 xsize = 6400
 ysize = 3200
 
-mocmap = healpy.visufunc.cartview(moc, sub=111, nest=True, notext=True, coord=['C', 'G'], rot=(180,0,0), xsize=xsize, ysize=ysize, return_projected_map=True)
+mocmap = healpy.visufunc.cartview(moc, sub=111, nest=True, notext=True, coord=['C', 'G'], rot=(0,0,0), xsize=xsize, ysize=ysize, return_projected_map=True)
 
 header = fits.Header()
 header['CRPIX1'] = xsize/2.0
@@ -56,5 +56,5 @@ header['CDELT2'] = 180.0/ysize
 header['EQUINOX'] = 2000.0
 header['OBJECT'] = 'SDSS DR9 coverage'
 
-hdu = fits.PrimaryHDU(np.array((mocmap)), header=header)
+hdu = fits.PrimaryHDU(np.fliplr(np.array((mocmap))), header=header)
 hdu.writeto('sdss_dr9_coverage.fits', clobber=True)
