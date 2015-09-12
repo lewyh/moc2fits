@@ -1,11 +1,13 @@
 # moc2fits
 Convert multi-order coverage file to fits image for easier visualization
 
+![alt tag](https://raw.githubusercontent.com/lewyh/moc2fits/master/galactic_cartesian_example.png)
+
 ---
 
 Downloads SDSS DR9 MOC file hosted on WFCAM Science Archive, converts the HEALPIX coverage information into a numpy array and writes out to a FITS image.
 
-Requires numpy, astropy & healpix.
+Requires numpy, astropy & healpy.
 
 Max resolution of ~3.5 arcmin limited by MOC file order.
 

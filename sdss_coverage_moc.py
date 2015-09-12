@@ -7,43 +7,42 @@ import urllib
 def calc_order(value):
     return (np.log2(value / 4) / 2).astype(int)
 
+# Grab SDSS DR9 MOC file from WFCAM Science Archive
 urllib.urlretrieve('http://wsa.roe.ac.uk/coverage-maps/OtherSurveys/sdssDR9-hires.fits', 'sdssDR9-hires.fits')
 fn = 'sdssDR9-hires.fits'
 
 h = fits.getheader(fn, 1)
 d = fits.getdata(fn, 1)
 
+# What order of HEALPIX representation to work with. 
+# Larger number = better resolution, but more memory needed.
 MOCORDER = 10
 
+# Create MOC array for healpy to use
 values = np.array(d).astype(int)
 orders = calc_order(values)
 cells = values - 4 * np.power(4, orders)
-
 moc = np.zeros(12 * np.power(4, MOCORDER))
-
 dt = {}
-
 for o in set(orders):
     mask = np.where(orders == o)
     dt[o] = cells[mask]
-
 moc = np.zeros(12 * np.power(4, MOCORDER))
-
 allcells = set(dt[MOCORDER])
-
 for order in range(np.min(dt.keys()), MOCORDER):
     shift = 2 * (MOCORDER - order)
     for cell in dt[order]:
         allcells.update(range(cell << shift, (cell+1) << shift ))
-
 for cell in allcells:
     moc[cell] += 1
 
+# Resolution of map to generate
 xsize = 6400
 ysize = 3200
 
 mocmap = healpy.visufunc.cartview(moc, sub=111, nest=True, notext=True, coord=['C', 'G'], rot=(0,0,0), xsize=xsize, ysize=ysize, return_projected_map=True)
 
+# Write out to FITS image
 header = fits.Header()
 header['CRPIX1'] = xsize/2.0
 header['CRPIX2'] = ysize/2.0
